@@ -10,13 +10,15 @@ function convertTypedArray(src, type) {
 function App() {
     const [text, setText] = useState('');
     const [status, setStatus] = useState('idle');
+    const [messages, setMessages] = useState([]);
 
     // Do not re-initialize
     const audioCtxRef = useRef(null);
     const ggwaveRef = useRef(null);
     const instanceRef = useRef(null);
+    const processorRef = useRef(null);
 
-    const handleSend = async () => {
+    const ensureInit = async () => {
         if (!audioCtxRef.current) {
             const ctx = new AudioContext();
             const ggwave = await window.ggwave_factory();
@@ -27,41 +29,90 @@ function App() {
             ggwaveRef.current = ggwave;
             audioCtxRef.current = ctx;
         }
+    }
 
-            const ctx = audioCtxRef.current;
-            const ggwave = ggwaveRef.current;
+    const handleSend = async () => {
+        await ensureInit();
+        
+        const ctx = audioCtxRef.current;
+        const ggwave = ggwaveRef.current;
 
-            // encode text to waveform
-            const waveform = ggwave.encode(
-            instanceRef.current,
-            text,
-            ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
-            10
+        // encode text to waveform
+        const waveform = ggwave.encode(
+        instanceRef.current,
+        text,
+        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
+        10
+        );
+
+        // convert Int8 -> Float32
+        const buf = convertTypedArray(waveform, Float32Array);
+
+        const audioBuf = ctx.createBuffer(1, buf.length, ctx.sampleRate);
+        audioBuf.getChannelData(0).set(buf);
+        const player = ctx.createBufferSource();
+        player.buffer = audioBuf;
+        player.connect(ctx.destination);
+        player.start(0);
+    };
+
+    const handleListen = async () => {
+        await ensureInit();
+        const ctx = audioCtxRef.current;
+        const ggwave = ggwaveRef.current;
+
+        // Get the microphone input
+        let stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                }
+            });
+        } catch (err) {
+            setStatus('Microphone access denied');
+            return;
+        }
+
+        const source = ctx.createMediaStreamSource(stream);
+
+        // Start listening for incoming audio
+        const processor = ctx.createScriptProcessor(4096, 1, 1);
+        processor.onaudioprocess = (e) => {
+            const input = e.inputBuffer.getChannelData(0);
+            const decoded = ggwave.decode(
+                instanceRef.current,
+                convertTypedArray(new Float32Array(input), Int8Array)
             );
-
-            // convert Int8 -> Float32
-            const buf = convertTypedArray(waveform, Float32Array);
-            
-            const audioBuf = ctx.createBuffer(1, buf.length, ctx.sampleRate);
-            audioBuf.getChannelData(0).set(buf);
-            const player = ctx.createBufferSource();
-            player.buffer = audioBuf;
-            player.connect(ctx.destination);
-            player.start(0);
+            if (decoded && decoded.length > 0) {
+                const msg = new TextDecoder("utf-8").decode(decoded);
+                setMessages((prev) => [...prev, msg]);
+            }
+        };
+        source.connect(processor);
+        processor.connect(ctx.destination);
+        processorRef.current = processor;
+        setStatus('Listening...');
     };
 
     return (
     <div>
-      <h1>Chirp</h1>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Type a message"
-      />
-      <button onClick={handleSend}>Send</button>
-      <p>{status}</p>
+        <h1>Chirp</h1>
+        <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Type a message"
+        />
+        <button onClick={handleSend}>Send</button>
+        <button onClick={handleListen}>Listen</button>
+        <p>{status}</p>
+        <ul>
+            {messages.map((m, i) => <li key={i}>{m}</li>)}
+        </ul>
     </div>
-  );
+    );
 }
 export default App
