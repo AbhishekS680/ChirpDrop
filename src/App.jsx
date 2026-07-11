@@ -99,7 +99,7 @@ function App() {
 
     return (
     <div>
-        <h1>Chirp</h1>
+        <h1>ChirpDrop</h1>
         <input
             type="text"
             value={text}
