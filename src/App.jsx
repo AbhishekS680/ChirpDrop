@@ -17,6 +17,7 @@ function App() {
     const ggwaveRef = useRef(null);
     const instanceRef = useRef(null);
     const processorRef = useRef(null);
+    const lastReceivedRef = useRef({ msg: '', time: 0 });
 
     const ensureInit = async () => {
         if (!audioCtxRef.current) {
@@ -103,6 +104,12 @@ function App() {
             );
             if (decoded && decoded.length > 0) {
                 const msg = new TextDecoder("utf-8").decode(decoded);
+                const timeNow = Date.now();
+
+                if (msg === lastReceivedRef.current.msg && timeNow - lastReceivedRef.current.time < 5000) {
+                    return;
+                }
+                lastReceivedRef.current = { msg, time: timeNow };
                 setMessages((prev) => [...prev, msg]);
             }
         };
