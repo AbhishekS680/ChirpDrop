@@ -31,6 +31,7 @@ function App() {
         }
     }
 
+    // ---- Sending messages logic ----
     const handleSend = async () => {
         await ensureInit();
         
@@ -50,12 +51,26 @@ function App() {
 
         const audioBuf = ctx.createBuffer(1, buf.length, ctx.sampleRate);
         audioBuf.getChannelData(0).set(buf);
-        const player = ctx.createBufferSource();
-        player.buffer = audioBuf;
-        player.connect(ctx.destination);
-        player.start(0);
+        
+        // plays one chirp, then schedules the next via onended
+        const playChirp = (remaining) => {
+            const player = ctx.createBufferSource();
+            player.buffer = audioBuf;
+            player.connect(ctx.destination);
+            player.onended = () => {
+                if (remaining > 1) {
+                    setTimeout(() => playChirp(remaining - 1), 300);
+                } else {
+                    setStatus('idle');
+                }
+            };
+            player.start(0);
+        };
+        setStatus('Sending...');
+        playChirp(3); // Plays a sound three times to ensure the message is received
     };
 
+    // ---- Listening for messages logic ----
     const handleListen = async () => {
         await ensureInit();
         const ctx = audioCtxRef.current;
