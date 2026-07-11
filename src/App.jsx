@@ -132,7 +132,13 @@ function App() {
         <button onClick={handleListen}>Listen</button>
         <p>{status}</p>
         <ul>
-            {messages.map((m, i) => <li key={i}>{m}</li>)}
+            {messages.map((m, i) => (
+                <li key={i}>
+                    {m.startsWith('http')
+                        ? <a href={m} target="_blank" rel="noreferrer">{m}</a>
+                        : m}
+                </li>
+            ))}
         </ul>
     </div>
     );
