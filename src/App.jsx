@@ -43,7 +43,7 @@ function App() {
         const waveform = ggwave.encode(
         instanceRef.current,
         text,
-        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_NORMAL,
+        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
         50
         );
 
