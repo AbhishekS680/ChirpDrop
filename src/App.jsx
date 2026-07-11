@@ -43,8 +43,8 @@ function App() {
         const waveform = ggwave.encode(
         instanceRef.current,
         text,
-        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
-        10
+        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_NORMAL,
+        50
         );
 
         // convert Int8 -> Float32
