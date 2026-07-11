@@ -153,7 +153,7 @@ function App() {
                 const msg = new TextDecoder("utf-8").decode(decoded);
                 const timeNow = Date.now();
 
-                if (msg === lastReceivedRef.current.msg && timeNow - lastReceivedRef.current.time < 5000) {
+                if (msg === lastReceivedRef.current.msg && timeNow - lastReceivedRef.current.time < 10000) {
                     return;
                 }
                 lastReceivedRef.current = { msg, time: timeNow };
