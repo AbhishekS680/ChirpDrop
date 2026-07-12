@@ -12,6 +12,7 @@ function App() {
     const [status, setStatus] = useState('Idle');
     const [messages, setMessages] = useState([]);
     const [isListening, setIsListening] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     // Do not re-initialize
     const audioCtxRef = useRef(null);
@@ -25,9 +26,13 @@ function App() {
     const sourceRef = useRef(null);
 
     useEffect(() => {
+        document.body.classList.toggle('dark', darkMode);
+    }, [darkMode]);
+
+    useEffect(() => {
         const canvas = canvasRef.current;
         const canvasCtx = canvas.getContext('2d');
-        canvasCtx.fillStyle = "rgb(216, 216, 216)";
+        canvasCtx.fillStyle = getComputedStyle(document.body).getPropertyValue('--canvas-bg');
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = "rgb(255, 120, 79)";
@@ -35,7 +40,7 @@ function App() {
         canvasCtx.moveTo(0, canvas.height / 2);
         canvasCtx.lineTo(canvas.width, canvas.height / 2);
         canvasCtx.stroke();
-    }, []);
+    }, [darkMode]);
 
     const ensureInit = async () => {
         if (!audioCtxRef.current) {
@@ -63,7 +68,7 @@ function App() {
                 const drawVisual = requestAnimationFrame(draw);
                 analyzer.getByteTimeDomainData(dataArray);
                 // Fill solid color
-                canvasCtx.fillStyle = "rgb(216, 216, 216)";
+                canvasCtx.fillStyle = getComputedStyle(document.body).getPropertyValue('--canvas-bg');
                 canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
                 // Begin the path
                 canvasCtx.lineWidth = 2;
@@ -194,7 +199,7 @@ function App() {
                 setMessages((prev) => [...prev, msg]);
                 setStatus('Message received!');
                 setTimeout(() => {
-                    setStatus('Listening...');
+                    setStatus(processorRef.current ? 'Listening...' : 'Idle');
                 }, 2000);
             }
         };
@@ -209,6 +214,13 @@ function App() {
     <div>
         <h1>Chirp<span style={{ color: 'var(--orange)' }}>Drop</span></h1>
         <img src="/ChirpDrop.svg" alt="ChirpDrop Logo" width="100" height="100" />
+        <button
+            className="theme-btn"
+            onClick={() => setDarkMode(prev => !prev)}
+            aria-label="Toggle theme"
+        >
+            <img src={darkMode ? '/sun.svg' : '/moon.svg'} alt="" width="22" height="22" />
+        </button>
         <input
             type="text"
             value={text}

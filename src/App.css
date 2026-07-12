@@ -1,9 +1,20 @@
 :root {
-    --white: #f8f8ff; /* Ghost white */
+    --white: #f8f8ff;
     --orange: #ff784f;
     --black: #343539;
     --lightgray: #d8d8d8;
     --sky: #b1d0ff;
+    --btn-bg: #343539;
+    --btn-text: #f8f8ff;
+    --canvas-bg: #d8d8d8;
+}
+body.dark {
+    --white: #1b1c20;
+    --black: #e8e8ee;
+    --lightgray: #2a2c33;
+    --btn-bg: #343539;
+    --btn-text: #f8f8ff;
+    --canvas-bg: #101114; /* waveform background */
 }
 
 * { box-sizing: border-box; }
@@ -55,8 +66,8 @@ button {
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  background: var(--black);
-  color: var(--white);
+  background: var(--btn-bg);
+  color: var(--btn-text);
   transition: transform 0.1s, background 0.2s;
 }
 
@@ -117,3 +128,35 @@ li { animation: arrive 0.8s ease-out; }
 li a { color: var(--orange); font-weight: 600; }
 
 p { color: var(--black); font-weight: 600; }
+
+.theme-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: var(--lightgray);
+    color: var(--black);
+    font-size: 1.3rem;
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-btn:hover {
+    background: var(--orange);
+    transform: translateY(-2px);
+}
+
+.theme-btn img {
+    display: block;
+}
+
+body.dark .theme-btn img {
+    filter: invert(1);
+}
