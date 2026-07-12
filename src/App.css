@@ -83,6 +83,29 @@ li {
   border-radius: 14px;
   margin-bottom: 8px;
   word-break: break-all;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.delete-btn {
+  background: transparent;
+  color: var(--black);
+  border: none;
+  font-size: 1.3rem;
+  padding: 0 6px;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0.4;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+  color: var(--orange);
+  background: transparent;
+  transform: none;
 }
 
 li a { color: var(--orange); font-weight: 600; }

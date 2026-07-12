@@ -11,6 +11,7 @@ function App() {
     const [text, setText] = useState('');
     const [status, setStatus] = useState('Idle');
     const [messages, setMessages] = useState([]);
+    const [isListening, setIsListening] = useState(false);
 
     // Do not re-initialize
     const audioCtxRef = useRef(null);
@@ -124,7 +125,7 @@ function App() {
                 if (remaining > 1) {
                     setTimeout(() => playChirp(remaining - 1), 300);
                 } else {
-                    setStatus('Idle');
+                    setStatus(processorRef.current ? 'Listening...' : 'Idle');
                 }
             };
             player.start(0);
@@ -146,6 +147,7 @@ function App() {
             sourceRef.current = null;
             processorRef.current = null;
             setStatus('Idle');
+            setIsListening(false);
             return;
         }
 
@@ -196,6 +198,7 @@ function App() {
         processor.connect(ctx.destination);
         processorRef.current = processor;
         setStatus('Listening...');
+        setIsListening(true);
     };
 
     return (
@@ -211,16 +214,24 @@ function App() {
         />
         <button onClick={handleSend}>Send</button>
         <button onClick={handleListen}>
-            {status === 'Listening...' ? 'Stop' : 'Listen'}
+            {isListening ? 'Stop' : 'Listen'}
         </button>
-        <canvas ref={canvasRef} width={600} height={120} />
         <p>Status: {status}</p>
+        <canvas ref={canvasRef} width={600} height={120} />
         <ul>
             {messages.map((m, i) => (
                 <li key={i}>
-                    {m.startsWith('http')
-                        ? <a href={m} target="_blank" rel="noreferrer">{m}</a>
-                        : m}
+                    <span>
+                        {m.startsWith('http')
+                            ? <a href={m} target="_blank" rel="noreferrer">{m}</a>
+                            : m}
+                    </span>
+                    <button
+                        className="delete-btn"
+                        onClick={() => setMessages((prev) => prev.filter((_, idx) => idx !== i))}
+                    >
+                        &times;
+                    </button>
                 </li>
             ))}
         </ul>
