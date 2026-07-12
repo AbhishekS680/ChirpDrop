@@ -3,7 +3,7 @@
   <img src="public/ChirpDrop.svg" alt="ChirpDrop logo" width="48" align="top" />
 </h1>
 
-<p align="center" target="_blank"><a href="https://chirpdrop.netlify.app">🌐 Try it live</a></p>
+<p align="center" target="_blank"><a href="https://chirp-drop.vercel.app/">🌐 Try it live</a></p>
 
 # What is ChirpDrop?
 
@@ -33,7 +33,7 @@ Because sound is a physical broadcast, one chirp reaches every listening device 
 - React + Vite: UI and build tooling
 - [ggwave](https://github.com/ggerganov/ggwave) by Georgi Gerganov (MIT): The open-source data-over-sound library providing FSK modulation and Reed–Solomon error correction. ChirpDrop builds the product layer on top: the use case, UX, reliability features (auto-retry, dedupe), visualization, and mic controls.
 - Web Audio API: Playback, microphone capture, and AnalyserNode-driven waveform rendering
-- Netlify: Hosting (HTTPS required for microphone access)
+- Vercel: Hosting (HTTPS required for microphone access)
 
 # Running locally
 
