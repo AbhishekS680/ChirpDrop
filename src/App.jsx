@@ -190,6 +190,7 @@ function App() {
             );
             if (decoded && decoded.length > 0) {
                 const msg = new TextDecoder("utf-8").decode(decoded);
+                if (msg.includes('\uFFFD')) return;
                 const timeNow = Date.now();
 
                 if (msg === lastReceivedRef.current.msg && timeNow - lastReceivedRef.current.time < 10000) {
