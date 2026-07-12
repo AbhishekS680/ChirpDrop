@@ -1,7 +1,7 @@
-<table align="center"><tr>
-  <td><h1>ChirpDrop</h1></td>
-  <td><img src="public/ChirpDrop.svg" width="64" /></td>
-</tr></table>
+<h1 align="center">
+  ChirpDrop
+  <img src="public/ChirpDrop.svg" alt="ChirpDrop logo" width="48" align="top" />
+</h1>
 
 # What is ChirpDrop?
 
