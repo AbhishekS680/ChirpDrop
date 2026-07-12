@@ -3,6 +3,8 @@
   <img src="public/ChirpDrop.svg" alt="ChirpDrop logo" width="48" align="top" />
 </h1>
 
+<p align="center"><a href="https://chirpdrop.netlify.app">🌐 Try it live</a></p>
+
 # What is ChirpDrop?
 
 ChirpDrop turns any device with a speaker and microphone into a broadcast messenger. Type a message, hit Send, and your device plays a short audible "chirp" that encodes the text as sound. Any nearby device with ChirpDrop open and listening decodes the chirp through its microphone and displays the message instantly.
@@ -19,7 +21,7 @@ Because sound is a physical broadcast, one chirp reaches every listening device 
 
 # Features
 - One-to-many broadcast: A single chirp can reach unlimited nearby listeners
-- Auto-retry + deduplication: Sends a chrip 3 times, and receivers keep exactly one copy
+- Auto-retry + deduplication: Sends a chirp 3 times, and receivers keep exactly one copy
 - Live waveform visualization: You can watch the data leave (and arrive at) your device
 - Smart links: Received URLs render as clickable links
 - Mic privacy control: You can stop using the microphone at any time
@@ -29,16 +31,18 @@ Because sound is a physical broadcast, one chirp reaches every listening device 
 # Tech stack
 
 - React + Vite: UI and build tooling
-- ggwave by Georgi Gerganov (MIT): The open-source data-over-sound library providing FSK modulation and Reed–Solomon error correction. ChirpDrop builds the product layer on top: the use case, UX, reliability features (auto-retry, dedupe), visualization, and mic controls.
+- [ggwave](https://github.com/ggerganov/ggwave) by Georgi Gerganov (MIT): The open-source data-over-sound library providing FSK modulation and Reed–Solomon error correction. ChirpDrop builds the product layer on top: the use case, UX, reliability features (auto-retry, dedupe), visualization, and mic controls.
 - Web Audio API: Playback, microphone capture, and AnalyserNode-driven waveform rendering
 - Netlify: Hosting (HTTPS required for microphone access)
 
 # Running locally
 
-`bashgit clone https://github.com/AbhishekS680/ChirpDrop.git`
-`cd ChirpDrop`
-`npm install`
-`npm run dev`
+```bash
+git clone https://github.com/AbhishekS680/ChirpDrop.git
+cd ChirpDrop
+npm install
+npm run dev
+```
 
 Open http://localhost:5173. To test receiving, open the app in two windows. Listen in one, and send in the other. Make sure your volume is up.
 
@@ -46,7 +50,7 @@ Note: Microphone access requires a secure context (HTTPS or localhost), so cross
 
 # Limitations
 - Because the bandwidth is around 8–16 bytes/sec, ChirpDrop can only send short text and links, not files.
-- Very loud environemnts can cause the decoder to not get the correct audio
+- Very loud environments can cause the decoder to not get the correct audio, and thus cannot get the message
 
 # Credits
-Built solo by Abhishek Sinha. Acoustic modem powered by the open-source ggwave library.
+Built solo by Abhishek Sinha. Acoustic modem powered by the open-source [ggwave](https://github.com/ggerganov/ggwave) library.
