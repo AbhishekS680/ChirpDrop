@@ -9,7 +9,7 @@ function convertTypedArray(src, type) {
 
 function App() {
     const [text, setText] = useState('');
-    const [status, setStatus] = useState('idle');
+    const [status, setStatus] = useState('Idle');
     const [messages, setMessages] = useState([]);
 
     // Do not re-initialize
@@ -47,11 +47,11 @@ function App() {
                 const drawVisual = requestAnimationFrame(draw);
                 analyzer.getByteTimeDomainData(dataArray);
                 // Fill solid color
-                canvasCtx.fillStyle = "rgb(200 200 200)";
+                canvasCtx.fillStyle = "rgb(216, 216, 216)";
                 canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
                 // Begin the path
                 canvasCtx.lineWidth = 2;
-                canvasCtx.strokeStyle = "rgb(0 0 0)";
+                canvasCtx.strokeStyle = "rgb(255, 120, 79)";
                 canvasCtx.beginPath();
                 // Draw each point in the waveform
                 const sliceWidth = WIDTH / bufferLength;
@@ -79,6 +79,7 @@ function App() {
 
     // ---- Sending messages logic ----
     const handleSend = async () => {
+        if (!text.trim()) return;
         await ensureInit();
         
         const ctx = audioCtxRef.current;
@@ -108,13 +109,14 @@ function App() {
                 if (remaining > 1) {
                     setTimeout(() => playChirp(remaining - 1), 300);
                 } else {
-                    setStatus('idle');
+                    setStatus('Idle');
                 }
             };
             player.start(0);
         };
         setStatus('Sending...');
         playChirp(3); // Plays a sound three times to ensure the message is received
+        setText('');
     };
 
     // ---- Listening for messages logic ----
@@ -168,17 +170,19 @@ function App() {
 
     return (
     <div>
-        <h1>ChirpDrop</h1>
+        <h1>Chirp<span style={{ color: 'var(--orange)' }}>Drop</span></h1>
+        <img src="/ChirpDrop.svg" alt="ChirpDrop Logo" width="100" height="100" />
         <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Type a message"
         />
         <button onClick={handleSend}>Send</button>
         <button onClick={handleListen}>Listen</button>
         <canvas ref={canvasRef} width={600} height={120} />
-        <p>{status}</p>
+        <p>Status: {status}</p>
         <ul>
             {messages.map((m, i) => (
                 <li key={i}>
