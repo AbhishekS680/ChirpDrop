@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
 function convertTypedArray(src, type) {
@@ -20,6 +20,21 @@ function App() {
     const lastReceivedRef = useRef({ msg: '', time: 0 });
     const analyzerRef = useRef(null);
     const canvasRef = useRef(null);
+    const streamRef = useRef(null);
+    const sourceRef = useRef(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const canvasCtx = canvas.getContext('2d');
+        canvasCtx.fillStyle = "rgb(216, 216, 216)";
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = "rgb(255, 120, 79)";
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(0, canvas.height / 2);
+        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        canvasCtx.stroke();
+    }, []);
 
     const ensureInit = async () => {
         if (!audioCtxRef.current) {
@@ -121,6 +136,19 @@ function App() {
 
     // ---- Listening for messages logic ----
     const handleListen = async () => {
+
+        // Stop listening if already listening
+        if (processorRef.current) {
+            streamRef.current.getTracks().forEach((t) => t.stop());
+            sourceRef.current.disconnect();
+            processorRef.current.disconnect();
+            streamRef.current = null;
+            sourceRef.current = null;
+            processorRef.current = null;
+            setStatus('Idle');
+            return;
+        }
+
         await ensureInit();
         const ctx = audioCtxRef.current;
         const ggwave = ggwaveRef.current;
@@ -140,7 +168,9 @@ function App() {
             return;
         }
 
+        streamRef.current = stream;
         const source = ctx.createMediaStreamSource(stream);
+        sourceRef.current = source;
         source.connect(analyzerRef.current);
 
         // Start listening for incoming audio
@@ -180,7 +210,9 @@ function App() {
             placeholder="Type a message"
         />
         <button onClick={handleSend}>Send</button>
-        <button onClick={handleListen}>Listen</button>
+        <button onClick={handleListen}>
+            {status === 'Listening...' ? 'Stop' : 'Listen'}
+        </button>
         <canvas ref={canvasRef} width={600} height={120} />
         <p>Status: {status}</p>
         <ul>
