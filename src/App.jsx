@@ -192,6 +192,10 @@ function App() {
                 }
                 lastReceivedRef.current = { msg, time: timeNow };
                 setMessages((prev) => [...prev, msg]);
+                setStatus('Message received!');
+                setTimeout(() => {
+                    setStatus('Listening...');
+                }, 2000);
             }
         };
         source.connect(processor);

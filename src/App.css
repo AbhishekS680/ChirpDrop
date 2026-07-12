@@ -108,6 +108,12 @@ li {
   transform: none;
 }
 
+@keyframes arrive {
+  from { background: var(--orange); transform: scale(1.03); }
+  to   { background: var(--lightgray); transform: scale(1); }
+}
+li { animation: arrive 0.8s ease-out; }
+
 li a { color: var(--orange); font-weight: 600; }
 
 p { color: var(--black); font-weight: 600; }
