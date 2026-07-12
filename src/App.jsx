@@ -212,8 +212,10 @@ function App() {
 
     return (
     <div>
-        <h1>Chirp<span style={{ color: 'var(--orange)' }}>Drop</span></h1>
-        <img src="/ChirpDrop.svg" alt="ChirpDrop Logo" width="100" height="100" />
+        <div className="header">
+            <h1>Chirp<span style={{ color: 'var(--orange)' }}>Drop</span></h1>
+            <img src="/ChirpDrop.svg" alt="ChirpDrop Logo" width="64" height="64" />
+        </div>
         <button
             className="theme-btn"
             onClick={() => setDarkMode(prev => !prev)}

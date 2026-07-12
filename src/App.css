@@ -160,3 +160,11 @@ p { color: var(--black); font-weight: 600; }
 body.dark .theme-btn img {
     filter: invert(1);
 }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
