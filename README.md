@@ -3,7 +3,7 @@
   <img src="public/ChirpDrop.svg" alt="ChirpDrop logo" width="48" align="top" />
 </h1>
 
-<p align="center"><a href="https://chirpdrop.netlify.app">🌐 Try it live</a></p>
+<p align="center" target="_blank"><a href="https://chirpdrop.netlify.app">🌐 Try it live</a></p>
 
 # What is ChirpDrop?
 
